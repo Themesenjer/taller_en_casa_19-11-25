@@ -7,7 +7,6 @@ on:
       - master
       - desarrollo
 
-# Permisos necesarios para que el GITHUB_TOKEN pueda leer el código y subir la imagen
 permissions:
   contents: read
   packages: write
@@ -16,29 +15,24 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # SOLUCIÓN CRÍTICA: Convertimos el nombre del repositorio a minúsculas
-    # Esto evita errores si tu usuario o repo tienen mayúsculas (Themesenjer -> themesenjer)
-    # Se guarda en la variable de entorno REPO_NAME
-    - name: ⬇Establecer Nombre de Repositorio en Minúsculas
-      id: set_repo_name
-      run: |
-        echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: ⬇Establecer Nombre de Repositorio en Minúsculas
+        id: set_repo_name
+        run: |
+          echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Construir y Publicar Imagen Docker
-      uses: docker/build-push-action@v6
-      with:
-        push: true
-        # Usamos la variable de entorno $REPO_NAME (que ya está en minúsculas)
-        # Etiqueta Final: ghcr.io/themesenjer/taller_en_casa_19-11-25:pablo-calc:1.0.1
-        tags: ghcr.io/${{ env.REPO_NAME }}:pablo-calc:1.0.1 
-        context: .
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Construir y Publicar Imagen Docker
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ghcr.io/${{ env.REPO_NAME }}:pablo-calc-1.0.1
+          context: .
