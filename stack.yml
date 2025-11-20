@@ -1,0 +1,1 @@
+docker stack deploy -c stack.yml --with-registry-auth pablo_calc_stack
