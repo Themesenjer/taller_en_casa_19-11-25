@@ -1,1 +1,15 @@
-docker stack deploy -c stack.yml --with-registry-auth pablo_calc_stack
+version: "3.9"
+
+services:
+  pablo-calc:
+    # IMAGEN CORRECTA: Nota que usamos 'pablo-calc-1.0.1' (con guion)
+    # Esto coincide con el arreglo que hicimos en GitHub Actions.
+    image: ghcr.io/themesenjer/taller_en_casa_19-11-25:pablo-calc-1.0.1
+    
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    
+    ports:
+      - "80:8080"
